@@ -173,8 +173,8 @@ const StyledLogo = styled("img")(({ theme }) => ({
     position: "absolute",
     top: "0px",
     left: "20px",
-    width: "62px",
-    height: "61px",
+    width: "55px",
+    height: "54px",
   },
 }));
 
