@@ -67,7 +67,7 @@ const StyledLogo = styled("img")(({ theme }) => ({
   width: "62px",
   height: "61px",
   position: "absolute",
-  left: "165px",
+  left: "200px",
   [theme.breakpoints.down("md")]: {
     width: "50px",
     height: "50px",
