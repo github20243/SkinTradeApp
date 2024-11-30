@@ -1,235 +1,247 @@
+import { useState } from "react";
 import {
   AppBar,
   Toolbar,
   Button,
+  IconButton,
+  Box,
+  Drawer,
+  List,
+  ListItemButton,
   Typography,
   styled,
-  Box,
 } from "@mui/material";
-import LogoImage from "../assets/icon/sticker 2.svg";
-import steamIcons from "../assets/icon/Vector.png";
-import TelegramLogo from "../assets/icon/Link.png";
-import YoutubeLogo from "../assets/icon/Link (1).png";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
+import TelegramIcon from "@mui/icons-material/Telegram";
+import YouTubeIcon from "@mui/icons-material/YouTube";
+import LogoImage from "../assets/icon/sticker 2 (1).svg";
+import SteamIcon from "../assets/icon/steam_logo.svg.svg";
+
+interface TextLinkProps {
+  isGiveaway: boolean;
+  index: number;
+  children: React.ReactNode;
+}
 
 const Header = () => {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [menuIcon, setMenuIcon] = useState(false);
+
+  const handleMenuToggle = () => {
+    setDrawerOpen(!drawerOpen);
+    setMenuIcon(!menuIcon);
+  };
+
+  const handleMenuItemClick = () => {
+    setDrawerOpen(false);
+    setMenuIcon(false);
+  };
+
   return (
     <HeaderWrapper position="static">
       <Toolbar>
-        <StyledLogo src={LogoImage} alt="Logo" />
-        <NavWrapper>
-          <NavList>
-            <NavItem>
-              <StyledNavItemText>ПРОДАТЬ СКИНЫ</StyledNavItemText>
-            </NavItem>
-            <NavItem>
-              <StyledNavItemText color="#007AFF">КУПИТЬ СКИНЫ</StyledNavItemText>
-            </NavItem>
-            <NavItem>
-              <StyledNavItemText>FAQ</StyledNavItemText>
-            </NavItem>
-            <NavItem>
-              <StyledNavItemText>ГАРАНТИИ</StyledNavItemText>
-            </NavItem>
-            <NavItem>
-              <StyledNavItemText>БЛОГ</StyledNavItemText>
-            </NavItem>
-            <NavItem>
-              <StyledNavItemText color="#AD95FF">GIVEAWAY</StyledNavItemText>
-            </NavItem>
-          </NavList>
-        </NavWrapper>
-        <IconsWrapper>
-          <StyledContainer>
-            <StyledYoutubeIcon src={YoutubeLogo} alt="YouTube" />
-            <StyledTelegramIcon src={TelegramLogo} alt="Telegram" />
-          </StyledContainer>
-          <SteamButton>
-            <StyledSteamIcon src={steamIcons} alt="Steam" />
-            ВОЙТИ ЧЕРЕЗ STEAM
+        <LeftSection>
+          <LogoWrapper>
+            <StyledLogo src={LogoImage} alt="Logo" />
+          </LogoWrapper>
+          <TextLinksWrapper>
+            {[
+              "ПРОДАТЬ СКИНЫ",
+              "КУПИТЬ СКИНЫ",
+              "FAQ",
+              "ГАРАНТИИ",
+              "БЛОГ",
+              "GIVEAWAY",
+            ].map((text, index) => (
+              <TextLink key={index} isGiveaway={text === "GIVEAWAY"} index={index}>
+                {text}
+              </TextLink>
+            ))}
+          </TextLinksWrapper>
+        </LeftSection>
+
+        <RightSection>
+          <IconButton color="inherit" aria-label="youtube" sx={{ display: { xs: "none", md: "flex" } }}>
+            <StyledIcon>
+              <YouTubeIcon fontSize="small" />
+            </StyledIcon>
+          </IconButton>
+
+          <IconButton color="inherit" aria-label="telegram" sx={{ display: { xs: "none", md: "flex" } }}>
+            <StyledIcon>
+              <TelegramIcon fontSize="small" />
+            </StyledIcon>
+          </IconButton>
+
+          <SteamButton variant="contained">
+            <SteamIconWrapper src={SteamIcon} alt="Steam" />
+            <StyledText sx={{ display: { xs: "none", md: "inline", fontWeight: 600 } }}>
+              ВОЙТИ ЧЕРЕЗ STEAM
+            </StyledText>
+            <StyledText sx={{ display: { xs: "inline", md: "none" } }}>Войти</StyledText>
           </SteamButton>
-        </IconsWrapper>
+        </RightSection>
+
+        <IconButton
+          edge="end"
+          color="inherit"
+          aria-label="menu"
+          onClick={handleMenuToggle}
+          sx={{ display: { xs: "block", md: "none" } }}
+        >
+          {menuIcon ? <CloseIcon /> : <MenuIcon />}
+        </IconButton>
       </Toolbar>
+
+      <Drawer
+        anchor="top"
+        open={drawerOpen}
+        onClose={handleMenuToggle}
+        sx={{
+          "& .MuiDrawer-paper": {
+            width: "100%",
+            backgroundColor: "#1A1C21",
+            color: "white",
+            padding: "20px",
+            borderBottom: "2px solid #AD95FF",
+            marginTop: "60px",
+            boxShadow: "none",
+          },
+        }}
+      >
+        <List>
+          {[
+            "ПРОДАТЬ СКИНЫ",
+            "КУПИТЬ СКИНЫ",
+            "FAQ",
+            "ГАРАНТИИ",
+            "БЛОГ",
+            "GIVEAWAY",
+          ].map((item, index) => (
+            <ListItemButton
+              component="button"
+              key={index}
+              onClick={handleMenuItemClick}
+              sx={{
+                fontWeight: "bold",
+                padding: "15px 0",
+                "&:hover": { backgroundColor: "#AD95FF" },
+                borderBottom: index !== 5 ? "1px solid #fff" : "none",
+                width: "100%",
+              }}
+            >
+              <Typography sx={{ fontFamily: "Open Sans", fontSize: "16px", fontWeight: "600", color: "white" }}>
+                {item}
+              </Typography>
+            </ListItemButton>
+          ))}
+        </List>
+      </Drawer>
     </HeaderWrapper>
   );
 };
 
 export default Header;
 
-const HeaderWrapper = styled(AppBar)(({ theme }) => ({
+const HeaderWrapper = styled(AppBar)({
   backgroundColor: "#1A1C21",
   color: "white",
-  [theme.breakpoints.down("xs")]: {
-    padding: "0 10px",
-  },
-}));
+  width: "100%",
+  margin: "0 auto",
+});
+
+const LeftSection = styled(Box)({
+  display: "flex",
+  alignItems: "center",
+  gap: "20px",
+  flexGrow: 1,
+});
+
+const LogoWrapper = styled(Box)({
+  display: "flex",
+  alignItems: "center",
+});
 
 const StyledLogo = styled("img")(({ theme }) => ({
   width: "62px",
   height: "61px",
   position: "absolute",
-  left: "200px",
+  left: "170px",
+  top: "0px",
   [theme.breakpoints.down("md")]: {
-    width: "50px",
-    height: "50px",
+    position: "absolute",
+    top: "0px",
     left: "20px",
-  },
-  [theme.breakpoints.down("xs")]: {
-    width: "40px",
-    height: "40px",
-    left: "10px",
+    width: "62px",
+    height: "61px",
   },
 }));
 
-const NavWrapper = styled(Box)(({ theme }) => ({
-  flexGrow: 1,
+const TextLinksWrapper = styled(Box)(({ theme }) => ({
   display: "flex",
-  justifyContent: "center",
+  alignItems: "center",
+  gap: "2px",
+  position: "relative",
+  left: "45%",
+  transform: "translateX(-50%)",
   [theme.breakpoints.down("md")]: {
-    justifyContent: "flex-start",
-  },
-  [theme.breakpoints.down("xs")]: {
-    justifyContent: "center",
+    display: "none",
   },
 }));
 
-const NavList = styled("ul")(({ theme }) => ({
+const TextLink = styled(Typography)<TextLinkProps>(({ isGiveaway, index }) => ({
+  fontFamily: "Open Sans",
+  fontSize: "14px",
+  fontWeight: 400,
+  lineHeight: "14px",
+  textUnderlinePosition: "from-font",
+  textDecorationSkipInk: "none",
+  color: isGiveaway ? "#AD95FF" : index === 1 ? "blue" : "white",
+  cursor: "pointer",
+  marginLeft: "20px",
+  marginRight: index === 5 ? "0" : "20px",
+  borderBottom: "none",
+  "&:hover": {
+    textDecoration: "underline",
+    transition: "color 0.3s ease, transform 0.3s ease",
+    borderBottom: "1px solid white",
+  },
+}));
+
+const RightSection = styled(Box)({
   display: "flex",
-  listStyle: "none",
-  gap: "25px",
-  padding: 0,
-  margin: 0,
-  fontFamily: "'Open Sans', sans-serif",
   alignItems: "center",
   justifyContent: "center",
-  width: "800px",
-  marginLeft: "40px",
-  [theme.breakpoints.down("md")]: {
-    width: "600px",
-  },
-  [theme.breakpoints.down("sm")]: {
-    width: "400px",
-  },
-  [theme.breakpoints.down("xs")]: {
-    flexDirection: "column",
-    gap: "10px",
-    width: "auto",
-    marginLeft: 0,
-  },
-}));
+});
 
-const NavItem = styled("li")(({ theme }) => ({
-  cursor: "pointer",
-  fontSize: "14px",
-  fontWeight: 300,
-  lineHeight: "14px",
-  paddingRight: "6.6px",
-  "&:hover": {
-    color: "#1e90ff",
-    borderBottom: "2px solid #1e90ff",
-    transition: "border-bottom 0.3s ease",
-  },
-  "&.active": {
-    color: "#007AFF",
-    fontWeight: 600,
-  },
-  [theme.breakpoints.down("xs")]: {
-    fontSize: "12px",
-  },
-}));
+const StyledIcon = styled("div")({
+  width: "24px",
+  height: "24px",
+});
 
-const StyledNavItemText = styled(Typography)(({ theme, color }) => ({
-  fontWeight: 400,
-  fontSize: "14px",
-  lineHeight: "14px",
-  color: color || "inherit",
-  "&:hover": {
-    color: "#1e90ff",
-    borderBottom: "2px solid #1e90ff",
-    transition: "border-bottom 0.3s ease",
-  },
-  [theme.breakpoints.down("xs")]: {
-    fontSize: "12px",
-  },
-}));
-
-const SteamButton = styled(Button)(({ theme }) => ({
-  width: "200px",
-  height: "38px",
-  borderRadius: "4px",
+const SteamButton = styled(Button)({
   backgroundColor: "#007AFF",
   color: "white",
-  fontSize: "12px",
-  fontWeight: 500,
-  lineHeight: "18px",
-  fontFamily: "'Open Sans', sans-serif",
-  position: "relative",
-  right: "80px",
-  [theme.breakpoints.down("sm")]: {
-    right: "10px",
-  },
-  [theme.breakpoints.down("xs")]: {
-    width: "150px",
-    right: "0px",
-    fontSize: "10px",
-  },
-  "&:hover": {
-    backgroundColor: "#0056b3",
-  },
-}));
-
-const IconsWrapper = styled(Box)(({ theme }) => ({
+  textTransform: "none",
   display: "flex",
   alignItems: "center",
-  justifyContent: "flex-start",
-  marginLeft: "120px",
-  flexDirection: "row-reverse",
-  gap: "10px",
-  [theme.breakpoints.down("md")]: {
-    marginLeft: "40px",
+  padding: "10px 20px",
+  borderRadius: "4px",
+  "&:hover": {
+    backgroundColor: "#005BB5",
   },
-  [theme.breakpoints.down("xs")]: {
-    flexDirection: "column",
-    gap: "5px",
-    marginLeft: "0",
-    marginTop: "10px",
-  },
-}));
-
-const Icon = styled("img")({
-  width: "18px",
-  height: "18px",
-  marginLeft: "12px",
 });
 
-const StyledSteamIcon = styled("img")({
-  width: "18px",
-  height: "10.38px",
+const SteamIconWrapper = styled("img")({
+  width: "20px",
+  height: "20px",
   marginRight: "8px",
-  opacity: 1,
 });
 
-const StyledYoutubeIcon = styled(Icon)({
-  position: "relative",
-  right: "10px",
-  cursor: "pointer",
+const StyledText = styled(Typography)({
+  fontFamily: "Open Sans",
+  fontSize: "14px",
+  fontWeight: "400",
+  color: "white",
 });
-
-const StyledTelegramIcon = styled(Icon)({
-  marginLeft: "12px",
-  cursor: "pointer",
-});
-
-const StyledContainer = styled("div")(({ theme }) => ({
-  position: "relative",
-  right: "375px",
-  display: "flex",
-  justifyContent: "center",
-  gap: "10px",
-  [theme.breakpoints.down("md")]: {
-    right: "50px",
-  },
-  [theme.breakpoints.down("xs")]: {
-    right: "0",
-    justifyContent: "flex-start",
-  },
-}));
